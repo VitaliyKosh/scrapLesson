@@ -1,0 +1,37 @@
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import csv
+
+baseURL = 'https://habr.com'
+
+html = urlopen('https://habr.com/ru/search/?q=node&target_type=posts&order=relevance')
+bs = BeautifulSoup(html, "html.parser")
+
+articleList = bs.findAll('article', {'class': 'tm-articles-list__item'})
+
+data = []
+
+for i in range(20):
+  header = articleList[i].h2
+  author = articleList[i].find('a', {'class': 'tm-user-info__username'})
+  date = articleList[i].time['title']
+  annotation = articleList[i].find('div', {'class': 'article-formatted-body'})
+  link = baseURL + articleList[i].a['href']
+
+  data.append([])
+  data[i].append(header.get_text())
+  data[i].append(author.get_text())
+  data[i].append(date)
+  data[i].append(annotation.get_text())
+  data[i].append(link)
+
+data.insert(0, ['Title', 'Author', 'Date', 'Annotation', 'Link'])
+
+def csv_writer(data, path):
+    with open(path, "w", newline='') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',')
+        for line in data:
+            writer.writerow(line)
+    
+path = "output.csv"
+csv_writer(data, path)

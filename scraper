@@ -28,8 +28,8 @@ for i in range(20):
 data.insert(0, ['Title', 'Author', 'Date', 'Annotation', 'Link'])
 
 def csv_writer(data, path):
-    with open(path, "w", newline='') as csv_file:
-        writer = csv.writer(csv_file, delimiter=',')
+    with open(path, "w", newline='\n') as csv_file:
+        writer = csv.writer(csv_file, delimiter='|')
         for line in data:
             writer.writerow(line)
     
